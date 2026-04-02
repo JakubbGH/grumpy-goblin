@@ -1,35 +1,52 @@
-// Grab the elements
 const emotionBox = document.getElementById('emotion-box');
-const submitBtn = document.getElementById('submit-btn');
+const hiddenEmotion = document.getElementById('hidden-emotion');
+const form = document.getElementById('goblin-form');
+const status = document.getElementById('status');
 const userInput = document.getElementById('user-input');
 
-// Mood cycle
+// 1. Emotion Cycling Logic
 const moods = ["Click Here", "😊", "😠", "😢", "😐"];
 let moodIndex = 0;
 
-// Change emoji on click
 emotionBox.addEventListener('click', () => {
     moodIndex = (moodIndex + 1) % moods.length;
-    emotionBox.textContent = moods[moodIndex];
+    const currentMood = moods[moodIndex];
     
-    // Adjust font size dynamically
-    if (moods[moodIndex] === "Click Here") {
+    emotionBox.textContent = currentMood;
+    hiddenEmotion.value = currentMood; // Updates the hidden input for the email
+    
+    if (currentMood === "Click Here") {
         emotionBox.style.fontSize = "0.9rem";
     } else {
-        emotionBox.style.fontSize = "2rem";
+        emotionBox.style.fontSize = "2.5rem";
     }
 });
 
-// Handle submit
-submitBtn.addEventListener('click', () => {
-    const text = userInput.value.trim();
-    const currentMood = emotionBox.textContent;
+// 2. Email Sending Logic
+form.addEventListener("submit", async (event) => {
+    event.preventDefault(); // Stop page refresh
+    
+    const data = new FormData(event.target);
+    
+    status.innerHTML = "Sending to the goblin...";
 
-    if (text !== "") {
-        console.log(`The Goblin sees you are ${currentMood} and you said: ${text}`);
-        alert("The goblin has recorded your grumbling.");
-        userInput.value = ""; // Clear box
-    } else {
-        alert("The goblin demands words!");
-    }
+    // REPLACE 'xbjvnrqz' WITH YOUR ACTUAL FORMSPREE ID
+    fetch("https://formspree.io/f/YOUR_FORMSPREE_ID", {
+        method: "POST",
+        body: data,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            status.innerHTML = "Success! The goblin has your message.";
+            form.reset();
+            emotionBox.textContent = "Click Here";
+            emotionBox.style.fontSize = "0.9rem";
+        } else {
+            status.innerHTML = "Oops! The goblin dropped your message.";
+        }
+    }).catch(error => {
+        status.innerHTML = "Error connecting to the goblin's cave.";
+    });
 });
