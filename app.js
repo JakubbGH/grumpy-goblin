@@ -1,38 +1,35 @@
-// Grab the elements from the HTML
+// Get elements
 const emotionBox = document.getElementById('emotion-box');
 const submitBtn = document.getElementById('submit-btn');
 const userInput = document.getElementById('user-input');
 
-// Define our list of emotions (starting with X as the default)
-const emotions = ["X", "😊", "😠", "😢", "😐"];
-let currentIndex = 0;
+// Mood list (Cycles back to "Click Here" at the end)
+const moods = ["Click Here", "😊", "😠", "😢", "😐"];
+let moodIndex = 0;
 
-// Function to cycle the emotion when the box is clicked
+// Click to change emotion
 emotionBox.addEventListener('click', () => {
-    // Move to the next index in the array
-    currentIndex++;
+    moodIndex = (moodIndex + 1) % moods.length;
+    emotionBox.textContent = moods[moodIndex];
     
-    // If we reach the end of the list, go back to the start (the X)
-    if (currentIndex >= emotions.length) {
-        currentIndex = 0;
+    // Increase font size if it's an emoji, shrink if it's text
+    if (moods[moodIndex].length > 2) {
+        emotionBox.style.fontSize = "1rem";
+    } else {
+        emotionBox.style.fontSize = "2rem";
     }
-    
-    // Update the box text to the new emoji
-    emotionBox.textContent = emotions[currentIndex];
 });
 
-// Function for the Submit button
+// Submit logic
 submitBtn.addEventListener('click', () => {
-    const message = userInput.value;
-    const currentEmoji = emotionBox.textContent;
+    const text = userInput.value.trim();
+    const currentMood = emotionBox.textContent;
 
-    if (message.trim() === "") {
-        alert("The Grumpy Goblin stares at your empty message...");
+    if (text === "") {
+        alert("The goblin grumbles... you haven't typed anything!");
     } else {
-        console.log("Goblin received:", message, "Mood:", currentEmoji);
-        alert("Submitted to the Goblin!");
-        
-        // Optional: Reset the input after submit
-        userInput.value = "";
+        console.log(`Mood: ${currentMood} | Message: ${text}`);
+        alert("Your thoughts have been fed to the goblin.");
+        userInput.value = ""; // Clear input
     }
 });
