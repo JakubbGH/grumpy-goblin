@@ -28,7 +28,7 @@ form.addEventListener("submit", async (event) => {
     
     const data = new FormData(event.target);
     
-    status.innerHTML = "Sending to the goblin...";
+    status.innerHTML = "Sending to the goblin minder...";
 
     // REPLACE 'xbjvnrqz' WITH YOUR ACTUAL FORMSPREE ID
     fetch("https://formspree.io/f/xzdkarew", {
@@ -39,14 +39,14 @@ form.addEventListener("submit", async (event) => {
         }
     }).then(response => {
         if (response.ok) {
-            status.innerHTML = "Success! The goblin has your message.";
+            status.innerHTML = "Success! The goblin minder has your message.";
             form.reset();
             emotionBox.textContent = "Click Here";
             emotionBox.style.fontSize = "0.9rem";
         } else {
-            status.innerHTML = "Oops! The goblin dropped your message.";
+            status.innerHTML = "Oops! The goblin minder dropped your message.";
         }
     }).catch(error => {
-        status.innerHTML = "Error connecting to the goblin's cave.";
+        status.innerHTML = "Error connecting to the goblin minder's mailbox.";
     });
 });
