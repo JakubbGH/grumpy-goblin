@@ -85,21 +85,34 @@
         }
 
         #submit-btn {
-            -webkit-appearance: none;
-            appearance: none;
-            background-color: #fff;
-            color: #000;
-            border: 3px solid #000;
+            /* Stop mobile browsers from using system styles */
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            appearance: none !important;
+
+            /* Force the colors to be exactly what we want */
+            background-color: #ffffff !important;
+            color: #000000 !important;
+        
+            /* Border and font */
+            border: 3px solid #000000 !important;
             padding: 10px 25px;
             font-size: 1.1rem;
-            font-family: inherit;
+            font-family: 'Courier New', Courier, monospace;
             cursor: pointer;
-            border-radius: 0;
+            border-radius: 0; /* Keep it square */
+    
+            /* Extra insurance for text visibility */
+            text-shadow: none;
+            opacity: 1;
         }
 
-        #submit-btn:hover, #submit-btn:active {
-            background-color: #000;
-            color: #fff;
+            /* Hover/Active state - swap colors when tapped */
+        #submit-btn:hover, 
+        #submit-btn:active {
+            background-color: #000000 !important;
+            color: #ffffff !important;
+        }
         }
 
         @media (max-width: 600px) {
