@@ -35,7 +35,7 @@ form.addEventListener("submit", async (event) => {
     }).then(response => {
         if (response.ok) {
             status.style.color = "green";
-            status.innerHTML = "The goblin minder has your message!";
+            status.innerHTML = "The goblin minder has received your message!";
             form.reset();
             emotionBox.textContent = "Click Here";
             emotionBox.style.fontSize = "0.9rem";
