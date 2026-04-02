@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grumpy Goblin</title>
     <style>
+        /* Force light mode so mobile phones don't invert colors */
+        :root {
+            color-scheme: light;
+        }
+
         body {
             font-family: 'Courier New', Courier, monospace;
             display: flex;
@@ -12,7 +17,8 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #fff;
+            background-color: #ffffff !important;
+            color: #000000 !important;
             padding: 20px;
         }
 
@@ -50,32 +56,38 @@
             font-weight: bold;
         }
 
+        /* The Emotion Click Box */
         #emotion-box {
-            -webkit-appearance: none;
-            appearance: none;
+            -webkit-appearance: none !important;
+            appearance: none !important;
             width: 120px;
             height: 60px;
-            border: 3px solid #000;
-            background: white;
+            border: 3px solid #000 !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-family: inherit;
-            border-radius: 0;
+            border-radius: 0 !important;
+            font-size: 0.9rem;
         }
 
+        /* The Text Input */
         #user-input {
-            -webkit-appearance: none;
+            -webkit-appearance: none !important;
             width: 100%;
             min-width: 300px;
             height: 60px;
-            border: 3px solid #000;
+            border: 3px solid #000 !important;
+            background-color: #ffffff !important;
+            color: #000000 !important;
             padding: 0 15px;
             font-size: 1.1rem;
             box-sizing: border-box;
             font-family: inherit;
-            border-radius: 0;
+            border-radius: 0 !important;
         }
 
         .submit-container {
@@ -84,37 +96,29 @@
             margin-top: 15px;
         }
 
+        /* The Submit Button - Force black text */
         #submit-btn {
-            /* Stop mobile browsers from using system styles */
             -webkit-appearance: none !important;
             -moz-appearance: none !important;
             appearance: none !important;
-
-            /* Force the colors to be exactly what we want */
             background-color: #ffffff !important;
-            color: #000000 !important;
-        
-            /* Border and font */
+            color: #000000 !important; /* Force black text */
             border: 3px solid #000000 !important;
             padding: 10px 25px;
             font-size: 1.1rem;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: inherit;
+            font-weight: bold;
             cursor: pointer;
-            border-radius: 0; /* Keep it square */
-    
-            /* Extra insurance for text visibility */
-            text-shadow: none;
-            opacity: 1;
+            border-radius: 0 !important;
+            text-transform: none;
         }
 
-            /* Hover/Active state - swap colors when tapped */
-        #submit-btn:hover, 
-        #submit-btn:active {
+        #submit-btn:hover, #submit-btn:active {
             background-color: #000000 !important;
             color: #ffffff !important;
         }
-        }
 
+        /* Mobile View - Stacked */
         @media (max-width: 600px) {
             .interface-row {
                 flex-direction: column;
@@ -129,12 +133,17 @@
                 min-width: unset;
                 width: 90vw;
             }
+            #emotion-box {
+                width: 150px;
+                height: 80px;
+            }
         }
 
         #status {
             margin-top: 15px;
-            font-size: 0.9rem;
+            font-size: 1rem;
             text-align: center;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -142,6 +151,7 @@
 
     <div class="app-wrapper">
         <h1>Grumpy Goblin</h1>
+
         <form id="goblin-form" style="width: 100%;">
             <div class="interface-row">
                 <div class="column">
@@ -149,9 +159,11 @@
                     <button type="button" id="emotion-box">Click Here</button>
                     <input type="hidden" name="emotion" id="hidden-emotion" value="None">
                 </div>
+
                 <div class="column" style="flex-grow: 1;">
                     <div class="label">Whats on your mind?</div>
-                    <input type="text" name="message" id="user-input" required>
+                    <input type="text" name="message" id="user-input" required autocomplete="off">
+                    
                     <div class="submit-container">
                         <button type="submit" id="submit-btn">Submit</button>
                     </div>
