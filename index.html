@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Grumpy Goblin</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👹</text></svg>">
+
     <style>
-        /* Force light mode so mobile phones don't invert colors */
         :root {
             color-scheme: light;
         }
@@ -56,7 +58,6 @@
             font-weight: bold;
         }
 
-        /* The Emotion Click Box */
         #emotion-box {
             -webkit-appearance: none !important;
             appearance: none !important;
@@ -74,7 +75,6 @@
             font-size: 0.9rem;
         }
 
-        /* The Text Input */
         #user-input {
             -webkit-appearance: none !important;
             width: 100%;
@@ -96,13 +96,12 @@
             margin-top: 15px;
         }
 
-        /* The Submit Button - Force black text */
         #submit-btn {
             -webkit-appearance: none !important;
             -moz-appearance: none !important;
             appearance: none !important;
             background-color: #ffffff !important;
-            color: #000000 !important; /* Force black text */
+            color: #000000 !important; 
             border: 3px solid #000000 !important;
             padding: 10px 25px;
             font-size: 1.1rem;
@@ -110,7 +109,6 @@
             font-weight: bold;
             cursor: pointer;
             border-radius: 0 !important;
-            text-transform: none;
         }
 
         #submit-btn:hover, #submit-btn:active {
@@ -118,7 +116,6 @@
             color: #ffffff !important;
         }
 
-        /* Mobile View - Stacked */
         @media (max-width: 600px) {
             .interface-row {
                 flex-direction: column;
@@ -151,7 +148,6 @@
 
     <div class="app-wrapper">
         <h1>Grumpy Goblin</h1>
-
         <form id="goblin-form" style="width: 100%;">
             <div class="interface-row">
                 <div class="column">
@@ -159,11 +155,9 @@
                     <button type="button" id="emotion-box">Click Here</button>
                     <input type="hidden" name="emotion" id="hidden-emotion" value="None">
                 </div>
-
                 <div class="column" style="flex-grow: 1;">
                     <div class="label">Whats on your mind?</div>
                     <input type="text" name="message" id="user-input" required autocomplete="off">
-                    
                     <div class="submit-container">
                         <button type="submit" id="submit-btn">Submit</button>
                     </div>
