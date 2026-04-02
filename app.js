@@ -31,7 +31,7 @@ form.addEventListener("submit", async (event) => {
     status.innerHTML = "Sending to the goblin...";
 
     // REPLACE 'xbjvnrqz' WITH YOUR ACTUAL FORMSPREE ID
-    fetch("https://formspree.io/f/YOUR_FORMSPREE_ID", {
+    fetch("https://formspree.io/f/xzdkarew", {
         method: "POST",
         body: data,
         headers: {
