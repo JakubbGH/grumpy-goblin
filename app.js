@@ -1,12 +1,38 @@
-...
-<button id="emotion-btn" aria-label="Goblin's current emotion: None (Click to change)">
-  <img id="emotion-image" src="images/goblin-happy.png" alt="Goblin is feeling happy" style="width: 50px; height: 50px; border: 2px solid black; background-color: white;">
-</button>
+// Grab the elements from the HTML
+const emotionBox = document.getElementById('emotion-box');
+const submitBtn = document.getElementById('submit-btn');
+const userInput = document.getElementById('user-input');
 
-...
+// Define our list of emotions (starting with X as the default)
+const emotions = ["X", "😊", "😠", "😢", "😐"];
+let currentIndex = 0;
 
-<form action="/submit-handler">
-  <input type="text" id="user-input" placeholder="...">
-  <button id="submit-btn" type="submit">Submit</button>
-</form>
-...
+// Function to cycle the emotion when the box is clicked
+emotionBox.addEventListener('click', () => {
+    // Move to the next index in the array
+    currentIndex++;
+    
+    // If we reach the end of the list, go back to the start (the X)
+    if (currentIndex >= emotions.length) {
+        currentIndex = 0;
+    }
+    
+    // Update the box text to the new emoji
+    emotionBox.textContent = emotions[currentIndex];
+});
+
+// Function for the Submit button
+submitBtn.addEventListener('click', () => {
+    const message = userInput.value;
+    const currentEmoji = emotionBox.textContent;
+
+    if (message.trim() === "") {
+        alert("The Grumpy Goblin stares at your empty message...");
+    } else {
+        console.log("Goblin received:", message, "Mood:", currentEmoji);
+        alert("Submitted to the Goblin!");
+        
+        // Optional: Reset the input after submit
+        userInput.value = "";
+    }
+});
