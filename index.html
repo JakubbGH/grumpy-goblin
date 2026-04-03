@@ -8,9 +8,8 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👹</text></svg>">
 
     <style>
-        :root {
-            color-scheme: light;
-        }
+        /* Force light mode to prevent mobile color inversion */
+        :root { color-scheme: light; }
 
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -34,7 +33,7 @@
 
         h1 {
             font-size: clamp(2rem, 8vw, 3.5rem);
-            margin: 0 0 30px 0;
+            margin: 0 0 40px 0;
             text-transform: uppercase;
             text-align: center;
         }
@@ -58,50 +57,50 @@
             font-weight: bold;
         }
 
-        #emotion-box {
+        /* Input Boxes Styling */
+        #emotion-box, #user-input {
             -webkit-appearance: none !important;
             appearance: none !important;
-            width: 120px;
-            height: 60px;
             border: 3px solid #000 !important;
             background-color: #ffffff !important;
             color: #000000 !important;
+            font-family: inherit;
+            border-radius: 0 !important;
+            height: 60px;
+            box-sizing: border-box;
+        }
+
+        #emotion-box {
+            width: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-family: inherit;
-            border-radius: 0 !important;
             font-size: 0.9rem;
         }
 
         #user-input {
-            -webkit-appearance: none !important;
             width: 100%;
             min-width: 300px;
-            height: 60px;
-            border: 3px solid #000 !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
             padding: 0 15px;
             font-size: 1.1rem;
-            box-sizing: border-box;
-            font-family: inherit;
-            border-radius: 0 !important;
         }
 
-        .submit-container {
+        /* Button Container */
+        .button-stack {
             display: flex;
-            justify-content: flex-end;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
             margin-top: 15px;
         }
 
+        /* Standard Submit Button */
         #submit-btn {
             -webkit-appearance: none !important;
-            -moz-appearance: none !important;
             appearance: none !important;
             background-color: #ffffff !important;
-            color: #000000 !important; 
+            color: #000000 !important;
             border: 3px solid #000000 !important;
             padding: 10px 25px;
             font-size: 1.1rem;
@@ -116,31 +115,40 @@
             color: #ffffff !important;
         }
 
+        /* Give me Attention Button */
+        #attention-btn {
+            -webkit-appearance: none !important;
+            appearance: none !important;
+            background-color: #ff0000 !important;
+            color: #ffffff !important;
+            border: 3px solid #000000 !important;
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0 !important;
+        }
+
+        #attention-btn:active {
+            background-color: #b30000 !important;
+        }
+
+        /* Mobile View (Stacked) */
         @media (max-width: 600px) {
-            .interface-row {
-                flex-direction: column;
-                align-items: center;
-                gap: 30px;
-            }
-            .column {
-                width: 100%;
-                align-items: center;
-            }
-            #user-input {
-                min-width: unset;
-                width: 90vw;
-            }
-            #emotion-box {
-                width: 150px;
-                height: 80px;
-            }
+            .interface-row { flex-direction: column; align-items: center; gap: 30px; }
+            .column { width: 100%; align-items: center; }
+            #user-input { width: 90vw; min-width: unset; }
+            #emotion-box { width: 150px; height: 80px; }
+            .button-stack { align-items: center; width: 100%; }
         }
 
         #status {
-            margin-top: 15px;
+            margin-top: 20px;
             font-size: 1rem;
             text-align: center;
             font-weight: bold;
+            min-height: 1.2em;
         }
     </style>
 </head>
@@ -148,6 +156,7 @@
 
     <div class="app-wrapper">
         <h1>Grumpy Goblin</h1>
+
         <form id="goblin-form" style="width: 100%;">
             <div class="interface-row">
                 <div class="column">
@@ -155,11 +164,14 @@
                     <button type="button" id="emotion-box">Click Here</button>
                     <input type="hidden" name="emotion" id="hidden-emotion" value="None">
                 </div>
+
                 <div class="column" style="flex-grow: 1;">
                     <div class="label">Whats on your mind?</div>
-                    <input type="text" name="message" id="user-input" required autocomplete="off">
-                    <div class="submit-container">
+                    <input type="text" id="user-input" required autocomplete="off">
+                    
+                    <div class="button-stack">
                         <button type="submit" id="submit-btn">Submit</button>
+                        <button type="button" id="attention-btn">Give me Attention</button>
                     </div>
                 </div>
             </div>
@@ -167,6 +179,87 @@
         <p id="status"></p>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        const emotionBox = document.getElementById('emotion-box');
+        const hiddenEmotion = document.getElementById('hidden-emotion');
+        const form = document.getElementById('goblin-form');
+        const status = document.getElementById('status');
+        const userInput = document.getElementById('user-input');
+        const attentionBtn = document.getElementById('attention-btn');
+
+        // 1. Emotion Cycling Logic
+        const moods = ["Click Here", "😊", "😠", "😢", "😐"];
+        let moodIndex = 0;
+
+        emotionBox.addEventListener('click', () => {
+            moodIndex = (moodIndex + 1) % moods.length;
+            const currentMood = moods[moodIndex];
+            emotionBox.textContent = currentMood;
+            hiddenEmotion.value = currentMood;
+            
+            if (currentMood === "Click Here") {
+                emotionBox.style.fontSize = "0.9rem";
+            } else {
+                emotionBox.style.fontSize = "2.8rem";
+            }
+        });
+
+        // 2. Main Submit (Discord + IFTTT)
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const messageText = userInput.value;
+            const currentEmotion = hiddenEmotion.value;
+
+            status.style.color = "black";
+            status.innerHTML = "Recording goblin grumbles...";
+
+            const discordWebhookUrl = "https://discord.com/api/webhooks/1489290884833869994/sj6t6kHTiHvac9p4ctyz2wsJy2K_JVESh7zW0p7_i6u-s49rkcmDpDA-5dawCZZhQ-qY";
+            const iftttUrl = "https://maker.ifttt.com/trigger/Grumpy Goblin Govee/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
+
+            const discordPayload = {
+                username: "Grumpy Goblin",
+                content: `**New Grumble!**\n**Emotion:** ${currentEmotion}\n**Message:** ${messageText}`
+            };
+
+            try {
+                await Promise.all([
+                    fetch(discordWebhookUrl, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(discordPayload)
+                    }),
+                    fetch(iftttUrl, { method: "POST", mode: 'no-cors' })
+                ]);
+
+                status.style.color = "green";
+                status.innerHTML = "Your goblin grumble has been received.";
+                form.reset();
+                emotionBox.textContent = "Click Here";
+                emotionBox.style.fontSize = "0.9rem";
+            } catch (e) {
+                status.style.color = "red";
+                status.innerHTML = "Connection Error. The goblin is busy.";
+            }
+        });
+
+        // 3. Give me Attention Logic
+        attentionBtn.addEventListener('click', async () => {
+            status.style.color = "red";
+            status.innerHTML = "Demanding attention...";
+
+            // Replace this URL with your Attention Webhook URL
+            const attentionUrl = "REPLACE_WITH_YOUR_ATTENTION_WEBHOOK_URL";
+
+            try {
+                await fetch(attentionUrl, { method: "POST", mode: 'no-cors' });
+                status.style.color = "green";
+                status.innerHTML = "Attention has been demanded!";
+                setTimeout(() => { status.innerHTML = ""; }, 3000);
+            } catch (e) {
+                status.style.color = "red";
+                status.innerHTML = "The cry for attention failed.";
+            }
+        });
+    </script>
 </body>
 </html>
