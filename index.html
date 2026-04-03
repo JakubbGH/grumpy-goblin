@@ -8,7 +8,7 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👹</text></svg>">
 
     <style>
-        /* Force light mode to prevent mobile color inversion */
+        /* Force light mode to prevent mobile color inversion/Dark Mode issues */
         :root { color-scheme: light; }
 
         body {
@@ -57,7 +57,7 @@
             font-weight: bold;
         }
 
-        /* Input Boxes Styling */
+        /* Input Boxes Styling - Mobile Fixes Applied */
         #emotion-box, #user-input {
             -webkit-appearance: none !important;
             appearance: none !important;
@@ -134,7 +134,7 @@
             background-color: #b30000 !important;
         }
 
-        /* Mobile View (Stacked) */
+        /* Mobile View (Stacked for small screens) */
         @media (max-width: 600px) {
             .interface-row { flex-direction: column; align-items: center; gap: 30px; }
             .column { width: 100%; align-items: center; }
@@ -148,7 +148,7 @@
             font-size: 1rem;
             text-align: center;
             font-weight: bold;
-            min-height: 1.2em;
+            min-height: 1.5em;
         }
     </style>
 </head>
@@ -162,7 +162,7 @@
                 <div class="column">
                     <div class="label">Emotion</div>
                     <button type="button" id="emotion-box">Click Here</button>
-                    <input type="hidden" name="emotion" id="hidden-emotion" value="None">
+                    <input type="hidden" id="hidden-emotion" value="None">
                 </div>
 
                 <div class="column" style="flex-grow: 1;">
@@ -171,7 +171,7 @@
                     
                     <div class="button-stack">
                         <button type="submit" id="submit-btn">Submit</button>
-                        <button type="button" id="attention-btn">Demand Attention</button>
+                        <button type="button" id="attention-btn">Give me Attention</button>
                     </div>
                 </div>
             </div>
@@ -186,6 +186,10 @@
         const status = document.getElementById('status');
         const userInput = document.getElementById('user-input');
         const attentionBtn = document.getElementById('attention-btn');
+
+        // Helper for the loop delay
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        let isLooping = false;
 
         // 1. Emotion Cycling Logic
         const moods = ["Click Here", "😊", "😠", "😢", "😐"];
@@ -204,7 +208,7 @@
             }
         });
 
-        // 2. Main Submit (Discord + IFTTT)
+        // 2. Standard Submit: Discord + IFTTT Govee
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
             const messageText = userInput.value;
@@ -214,11 +218,12 @@
             status.innerHTML = "Recording goblin grumbles...";
 
             const discordWebhookUrl = "https://discord.com/api/webhooks/1489290884833869994/sj6t6kHTiHvac9p4ctyz2wsJy2K_JVESh7zW0p7_i6u-s49rkcmDpDA-5dawCZZhQ-qY";
-            const iftttUrl = "https://maker.ifttt.com/trigger/Grumpy Goblin Govee/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
+            const iftttGoveeUrl = "https://maker.ifttt.com/trigger/Grumpy Goblin Govee/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
 
             const discordPayload = {
                 username: "Grumpy Goblin",
-                content: `**New Grumble!**\n**Emotion:** ${currentEmotion}\n**Message:** ${messageText}`
+                avatar_url: "https://emoji.slack-edge.com/T024FPH1Z/goblin/d6074a3861.png",
+                content: `**New Grumble Received!**\n**Emotion:** ${currentEmotion}\n**Message:** ${messageText}`
             };
 
             try {
@@ -228,7 +233,7 @@
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(discordPayload)
                     }),
-                    fetch(iftttUrl, { method: "POST", mode: 'no-cors' })
+                    fetch(iftttGoveeUrl, { method: "POST", mode: 'no-cors' })
                 ]);
 
                 status.style.color = "green";
@@ -236,28 +241,44 @@
                 form.reset();
                 emotionBox.textContent = "Click Here";
                 emotionBox.style.fontSize = "0.9rem";
+                hiddenEmotion.value = "None";
             } catch (e) {
                 status.style.color = "red";
-                status.innerHTML = "Connection Error. The goblin is busy.";
+                status.innerHTML = "The goblin minder is busy (Connection Error).";
             }
         });
 
-        // 3. Give me Attention Logic
+        // 3. Give me Attention: 10-Round Webhook Loop
         attentionBtn.addEventListener('click', async () => {
+            if (isLooping) return; // Prevent spamming the loop
+            
+            isLooping = true;
             status.style.color = "red";
-            status.innerHTML = "Demanding attention...";
 
-            // Replace this URL with your Attention Webhook URL
-            const attentionUrl = "https://maker.ifttt.com/trigger/Goblin Attention/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
+            const webhookOne = "https://maker.ifttt.com/trigger/Goblin Attention/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
+            const webhookTwo = "https://maker.ifttt.com/trigger/Grumpy Goblin Govee/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
 
             try {
-                await fetch(attentionUrl, { method: "POST", mode: 'no-cors' });
+                for (let i = 1; i <= 10; i++) {
+                    status.innerHTML = `🚨 Demanding attention (${i}/10)... 🚨`;
+
+                    // Send first Webhook
+                    fetch(webhookOne, { method: "POST", mode: 'no-cors' });
+                    await delay(1000);
+
+                    // Send second Webhook
+                    fetch(webhookTwo, { method: "POST", mode: 'no-cors' });
+                    await delay(1000);
+                }
+
                 status.style.color = "green";
-                status.innerHTML = "Attention has been demanded!";
-                setTimeout(() => { status.innerHTML = ""; }, 3000);
-            } catch (e) {
+                status.innerHTML = "Attention sequence complete!";
+            } catch (error) {
                 status.style.color = "red";
-                status.innerHTML = "The cry for attention failed.";
+                status.innerHTML = "The goblin sequence was interrupted.";
+            } finally {
+                isLooping = false;
+                setTimeout(() => { if (!isLooping) status.innerHTML = ""; }, 3000);
             }
         });
     </script>
