@@ -152,7 +152,7 @@ form.addEventListener("submit", async (event) => {
     status.innerHTML = "Demanding attention...";
 
     // 2. The Webhook URL (Replace this with your actual webhook)
-    const attentionWebhookUrl = "REPLACE_WITH_YOUR_NEW_WEBHOOK_URL";
+    const attentionWebhookUrl = "https://maker.ifttt.com/trigger/Goblin Attention/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
 
     try {
         const response = await fetch(attentionWebhookUrl, {
@@ -170,7 +170,7 @@ form.addEventListener("submit", async (event) => {
     } catch (error) {
         console.error(error);
         status.style.color = "red";
-        status.innerHTML = "The goblin's cry for attention failed.";
+        status.innerHTML = "The goblin's cry for attention has not been processed.";
     }
 });
 
