@@ -30,7 +30,7 @@ form.addEventListener("submit", async (event) => {
     const currentEmotion = hiddenEmotion.value;
 
     status.style.color = "black";
-    status.innerHTML = "Waking the goblin...";
+    status.innerHTML = "It's Goblin Time!";
 
     // Prepare the two requests
     const formspreeRequest = fetch("https://formspree.io/f/xzdkarew", {
@@ -55,18 +55,18 @@ form.addEventListener("submit", async (event) => {
         .then(([formResponse]) => {
             if (formResponse.ok) {
                 status.style.color = "green";
-                status.innerHTML = "Success! Email sent and lights triggered.";
+                status.innerHTML = "Your message has been sent to the Goblin Minder.";
                 form.reset();
                 emotionBox.textContent = "Click Here";
                 emotionBox.style.fontSize = "0.9rem";
             } else {
                 status.style.color = "red";
-                status.innerHTML = "Email failed, but lights might have worked.";
+                status.innerHTML = "The Goblin Minder is out of reach.";
             }
         })
         .catch(error => {
             console.error(error);
             status.style.color = "red";
-            status.innerHTML = "The goblin encountered a connection error.";
+            status.innerHTML = "The Goblin Minder encountered a connection error.";
         });
 });
