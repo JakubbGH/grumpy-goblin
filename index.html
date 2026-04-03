@@ -264,18 +264,18 @@
 
                     // Send first Webhook
                     fetch(webhookOne, { method: "POST", mode: 'no-cors' });
-                    await delay(1000);
+                    await delay(2000);
 
                     // Send second Webhook
                     fetch(webhookTwo, { method: "POST", mode: 'no-cors' });
-                    await delay(1000);
+                    await delay(2000);
                 }
 
                 status.style.color = "green";
-                status.innerHTML = "Attention sequence complete!";
+                status.innerHTML = "Attention demanding complete!";
             } catch (error) {
                 status.style.color = "red";
-                status.innerHTML = "The goblin sequence was interrupted.";
+                status.innerHTML = "The goblin was interrupted.";
             } finally {
                 isLooping = false;
                 setTimeout(() => { if (!isLooping) status.innerHTML = ""; }, 3000);
