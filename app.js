@@ -21,52 +21,54 @@ emotionBox.addEventListener('click', () => {
     }
 });
 
-// 2. Dual Submission Logic (Email + IFTTT)
+// 2. Dual Submission (Discord + IFTTT)
 form.addEventListener("submit", async (event) => {
     event.preventDefault();
     
-    const data = new FormData(event.target);
     const messageText = userInput.value;
     const currentEmotion = hiddenEmotion.value;
 
     status.style.color = "black";
-    status.innerHTML = "It's Goblin Time!";
+    status.innerHTML = "Feeding the goblin...";
 
-    // Prepare the two requests
-    const formspreeRequest = fetch("https://formspree.io/f/xzdkarew", {
-        method: "POST",
-        body: data,
-        headers: { 'Accept': 'application/json' }
-    });
+    // --- DISCORD WEBHOOK SETUP ---
+    // REPLACE the URL below with your actual Discord Webhook URL
+    const discordWebhookUrl = "https://discord.com/api/webhooks/1489290884833869994/sj6t6kHTiHvac9p4ctyz2wsJy2K_JVESh7zW0p7_i6u-s49rkcmDpDA-5dawCZZhQ-qY";
+    
+    const discordPayload = {
+        username: "Grumpy Goblin",
+        avatar_url: "https://emoji.slack-edge.com/T024FPH1Z/goblin/d6074a3861.png",
+        content: `**New Grumble Received!**\n**Emotion:** ${currentEmotion}\n**Message:** ${messageText}`
+    };
 
-    // IFTTT Webhook (Using 'no-cors' mode to prevent mobile security blocks)
-    const iftttRequest = fetch("https://maker.ifttt.com/trigger/Grumpy Goblin Govee/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5", {
-        method: "POST",
-        mode: 'no-cors', 
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-            value1: currentEmotion, 
-            value2: messageText 
-        })
-    });
+    // --- IFTTT SETUP ---
+    const iftttUrl = "https://maker.ifttt.com/trigger/Grumpy Goblin Govee/with/key/bmiQfTI93vgLEWj3afOTH3IfcabgeX_iwA7o3lasmw5";
 
-    // Fire both at the same time
-    Promise.all([formspreeRequest, iftttRequest])
-        .then(([formResponse]) => {
-            if (formResponse.ok) {
-                status.style.color = "green";
-                status.innerHTML = "Your message has been sent to the Goblin Minder.";
-                form.reset();
-                emotionBox.textContent = "Click Here";
-                emotionBox.style.fontSize = "0.9rem";
-            } else {
-                status.style.color = "red";
-                status.innerHTML = "The Goblin Minder is out of reach.";
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            status.style.color = "red";
-            status.innerHTML = "The Goblin Minder encountered a connection error.";
-        });
+    // Fire both requests
+    try {
+        const [discordRes, iftttRes] = await Promise.all([
+            fetch(discordWebhookUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(discordPayload)
+            }),
+            fetch(iftttUrl, {
+                method: "POST",
+                mode: 'no-cors' // Keeps mobile browsers happy
+            })
+        ]);
+
+        // Success!
+        status.style.color = "green";
+        status.innerHTML = "Success! Discord notified and lights triggered.";
+        form.reset();
+        emotionBox.textContent = "Click Here";
+        emotionBox.style.fontSize = "0.9rem";
+        hiddenEmotion.value = "None";
+
+    } catch (error) {
+        console.error(error);
+        status.style.color = "red";
+        status.innerHTML = "The goblin tripped over a wire (Connection Error).";
+    }
 });
